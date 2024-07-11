@@ -22,7 +22,7 @@ def format_currency(value):
     return formatted_currency
 
 
-def normalize_lender_data(lender_df):
+def normalize_lender_data(lender_df, needle=None):
     """
     Normalize the lender data in a DataFrame.
 
@@ -52,7 +52,7 @@ def normalize_lender_data(lender_df):
 
 
 
-def normalize_bank_data(bank_df):
+def normalize_bank_data(bank_df, needle=None):
     """
     Normalize the bank data in a DataFrame.
 
@@ -95,7 +95,10 @@ def normalize_bank_data(bank_df):
     # Normalize 'Details' column
     bank_df['normalized_description'] = bank_df['Details'].apply(lambda x: ''.join(e for e in x.lower() if e.isalnum()))
 
-    return bank_df[bank_df['normalized_description'].str.contains('ramani') & (bank_df['Credit'] == 0)]
+    if needle:
+        return bank_df[bank_df['normalized_description'].str.contains(needle) & (bank_df['Credit'] == 0)]
+
+    return bank_df
 
 
 
@@ -168,8 +171,9 @@ def check_missing_from_lender(bank_statement, lender_statement):
 
     # Find the records in the bank statement that are missing from the lender statement
     missing_records = bank_statement[~bank_descriptions.isin(lender_descriptions)]
+    matching_records = bank_statement[bank_descriptions.isin(lender_descriptions)]
 
-    return missing_records
+    return missing_records, matching_records
 
 
 def get_lender_df_by_column_and_value(column_name, value, lender_statement):
