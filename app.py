@@ -3,13 +3,10 @@ import os
 import pandas as pd
 from controls import *
 import logging
-import locale
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Set locale for Tanzania
-locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 # Function to create directory if it doesn't exist
 def create_directory(directory):
@@ -139,7 +136,7 @@ def main():
             st.write(f"Total Missing Amount: {total_missing_amount}")
         else:
             st.info("No records missing from Airtable")
-    
+
         st.subheader("All found transactions:")
         st.write(bank_statement)
 
