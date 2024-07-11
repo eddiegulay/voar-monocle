@@ -33,10 +33,19 @@ def display_metrics(title, stats):
 def process_large_csv(file_path, chunk_size=10000):
     """Read and process large CSV file in chunks."""
     chunks = []
-    for chunk in pd.read_csv(file_path, chunksize=chunk_size):
-        chunk = normalize_bank_data(chunk)
-        chunks.append(chunk)
-    return pd.concat(chunks, ignore_index=True)
+    try:
+        for chunk in pd.read_csv(file_path, chunksize=chunk_size, encoding='utf-8'):
+            chunk = normalize_bank_data(chunk)
+            chunks.append(chunk)
+        return pd.concat(chunks, ignore_index=True)
+    except UnicodeDecodeError:
+        logger.error("Failed to decode file with utf-8 encoding, trying with ISO-8859-1 encoding")
+        for chunk in pd.read_csv(file_path, chunksize=chunk_size, encoding='ISO-8859-1'):
+            chunk = normalize_bank_data(chunk)
+            chunks.append(chunk)
+            new_df = pd.concat(chunks, ignore_index=True)
+            logger.info("Dataframe Stats: ", new_df.columns, len(new_df))
+        return new_df
 
 def main():
     st.title("🧐 Flit Monocle")
@@ -130,6 +139,9 @@ def main():
             st.write(f"Total Missing Amount: {total_missing_amount}")
         else:
             st.info("No records missing from Airtable")
+    
+        st.subheader("All found transactions:")
+        st.write(bank_statement)
 
     else:
         st.info("Please upload both CSV files to start reconciliation.")

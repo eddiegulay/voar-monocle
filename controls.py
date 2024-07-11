@@ -85,10 +85,12 @@ def normalize_bank_data(bank_df):
     bank_df['Posting Date'] = bank_df['Posting Date'].apply(parse_date)
     bank_df['Value Date'] = bank_df['Value Date'].apply(parse_date)
 
+    # Ensure that 'Debit' and 'Credit' columns are strings
+    bank_df['Debit'] = bank_df['Debit'].astype(str).str.replace(',', '').astype(float)
+    bank_df['Credit'] = bank_df['Credit'].astype(str).str.replace(',', '').astype(float)
 
-    # Convert 'Debit' and 'Credit' columns to numeric
-    bank_df['Debit'] = bank_df['Debit'].str.replace(',', '').astype(float)
-    bank_df['Credit'] = bank_df['Credit'].str.replace(',', '').astype(float)
+    # Normalizing other relevant columns if needed
+    bank_df['Details'] = bank_df['Details'].astype(str)
 
     # Normalize 'Details' column
     bank_df['normalized_description'] = bank_df['Details'].apply(lambda x: ''.join(e for e in x.lower() if e.isalnum()))
@@ -136,9 +138,9 @@ def get_bank_stats(bank_statement):
     total_credit = bank_statement['Credit'].sum()
     total_debit = bank_statement['Debit'].sum()
 
-    # Min - Max Value Date
-    results['From'] = bank_statement['Value Date'].min()
-    results['To'] = bank_statement['Value Date'].max()
+    # Min - Max Posting Date
+    results['From'] = bank_statement['Posting Date'].iloc[0]
+    results['To'] = bank_statement['Posting Date'].iloc[-1]
 
     # Format as currency
     results['records'] = len(bank_statement)
