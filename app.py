@@ -36,8 +36,8 @@ def process_large_csv(file_path, chunk_size=10000):
             chunks.append(chunk)
         return pd.concat(chunks, ignore_index=True)
     except UnicodeDecodeError:
-        logger.error("Failed to decode file with utf-8 encoding, trying with ISO-8859-1 encoding")
-        for chunk in pd.read_csv(file_path, chunksize=chunk_size, encoding='ISO-8859-1'):
+        logger.error("Failed to decode file with utf-8 encoding, trying with latin encoding")
+        for chunk in pd.read_csv(file_path, chunksize=chunk_size, encoding='latin'):
             chunk = normalize_bank_data(chunk)
             chunks.append(chunk)
             new_df = pd.concat(chunks, ignore_index=True)
