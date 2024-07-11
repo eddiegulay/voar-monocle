@@ -1,8 +1,25 @@
 import pandas as pd
 import string
-import locale
 
-locale.setlocale(locale.LC_ALL, 'sw_TZ.UTF-8')
+def format_currency(value):
+    """
+    Format a number as a currency string with commas as thousand separators and the default currency symbol 'TSh'.
+
+    Parameters:
+    value (float): The numeric value to be formatted.
+
+    Returns:
+    str: The formatted currency string.
+    """
+    currency_symbol = 'TSh'
+
+    # Format the number with commas as thousand separators and two decimal places
+    formatted_number = f"{value:,.2f}"
+
+    # Add the currency symbol
+    formatted_currency = f"{currency_symbol} {formatted_number}"
+
+    return formatted_currency
 
 
 def normalize_lender_data(lender_df):
@@ -99,8 +116,8 @@ def get_lender_stats(lender_statement):
     total_debit = lender_statement[lender_statement['debit'].notnull()]['debit'].sum()
 
     # Format as currency
-    credit_debit['credit_amount'] = locale.currency(total_credit, grouping=True)
-    credit_debit['debit_amount'] = locale.currency(total_debit, grouping=True)
+    credit_debit['credit_amount'] = format_currency(total_credit)
+    credit_debit['debit_amount'] = format_currency(total_debit)
 
     return results, credit_debit
 
@@ -125,8 +142,8 @@ def get_bank_stats(bank_statement):
 
     # Format as currency
     results['records'] = len(bank_statement)
-    credit_debit['credit'] = locale.currency(total_credit, grouping=True)
-    credit_debit['debit'] = locale.currency(total_debit, grouping=True)
+    credit_debit['credit'] = format_currency(total_credit)
+    credit_debit['debit'] = format_currency(total_debit)
 
     return results, credit_debit
 

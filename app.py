@@ -97,7 +97,7 @@ def main():
             st.write(get_lender_df_by_column_and_value('POP', 'No PoP Provided', lending_statement))
             # total missing value
             total_missing_value = lending_statement[lending_statement['POP'] == 'No PoP Provided']['credit'].sum()
-            total_missing_value = locale.currency(total_missing_value, grouping=True)
+            total_missing_value = format_currency(total_missing_value)
             st.write(f"Total Missing Value (sent to lender): {total_missing_value}")
 
         # check if there are unmatched records
@@ -106,7 +106,7 @@ def main():
             st.write(get_lender_df_by_column_and_value('ismatched', 'Not Checked', lending_statement))
             # total unmatched value
             total_unmatched_value = lending_statement[lending_statement['ismatched'] == 'Not Checked']['credit'].sum()
-            total_unmatched_value = locale.currency(total_unmatched_value, grouping=True)
+            total_unmatched_value = format_currency(total_unmatched_value)
             st.write(f"Total Unmatched Value: {total_unmatched_value}")
 
         # check missing from lender
@@ -118,7 +118,7 @@ def main():
 
             # total missing amount missing from lender
             total_missing_amount = missing_from_lender['Debit'].sum()
-            total_missing_amount = locale.currency(total_missing_amount, grouping=True)
+            total_missing_amount = format_currency(total_missing_amount)
             st.write(f"Total Missing Amount: {total_missing_amount}")
         else:
             st.info("No records missing from Airtable")
