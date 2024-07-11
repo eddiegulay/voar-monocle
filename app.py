@@ -1,13 +1,15 @@
 import streamlit as st
 import os
 import pandas as pd
-
 from controls import *
-
 import logging
+import locale
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Set locale for Tanzania
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 # Function to create directory if it doesn't exist
 def create_directory(directory):
@@ -26,7 +28,15 @@ def display_metrics(title, stats):
         st.subheader(title)
     cols = st.columns(len(stats))
     for col, (metric, value) in zip(cols, stats.items()):
-        col.write(f"**{metric}:** \n{value}")
+        col.metric(metric, value)
+
+def process_large_csv(file_path, chunk_size=10000):
+    """Read and process large CSV file in chunks."""
+    chunks = []
+    for chunk in pd.read_csv(file_path, chunksize=chunk_size):
+        chunk = normalize_bank_data(chunk)
+        chunks.append(chunk)
+    return pd.concat(chunks, ignore_index=True)
 
 def main():
     st.title("🧐 Flit Monocle")
@@ -62,7 +72,7 @@ def main():
 
     # If files are available, process them
     if crdb_file_path and lending_file_path:
-        bank_statement = pd.read_csv(crdb_file_path)
+        bank_statement = process_large_csv(crdb_file_path)
         lending_statement = pd.read_csv(lending_file_path)
 
         # Normalize data
@@ -79,8 +89,6 @@ def main():
         # Get File stats
         bank_stats, bank_credit_debit = get_bank_stats(bank_statement)
         lender_stats, credit_debit = get_lender_stats(lending_statement)
-
-
 
         # Display Bank Statement Stats
         display_metrics("Bank Statement Stats", bank_stats)
