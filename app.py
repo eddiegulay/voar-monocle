@@ -107,7 +107,7 @@ def main():
 
         # check if there are missing PoPs
         if lender_stats['no_PoP'] > 0:
-            st.subheader("🧾 Records missing Proof of Payment:")
+            st.subheader("🧾 Records missing Proof of Payment (airtable):")
             st.write(get_lender_df_by_column_and_value('POP', 'No PoP Provided', lending_statement))
             # total missing value
             total_missing_value = lending_statement[lending_statement['POP'] == 'No PoP Provided']['credit'].sum()
@@ -116,7 +116,7 @@ def main():
 
         # check if there are unmatched records
         if lender_stats['unmatched'] > 0:
-            st.subheader("❌ Unmatched Records:")
+            st.subheader("❌ Unmatched Records (airtable):")
             st.write(get_lender_df_by_column_and_value('ismatched', 'Not Checked', lending_statement))
             # total unmatched value
             total_unmatched_value = lending_statement[lending_statement['ismatched'] == 'Not Checked']['credit'].sum()
