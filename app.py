@@ -29,7 +29,9 @@ def display_metrics(title, stats):
         col.write(f"**{metric}:** \n{value}")
 
 def main():
-    st.title("Monocle 🧐")
+    st.title("Flit Monocle 🧐")
+    st.write("Cross company statement recon.")
+    st.write("---")
 
     # Define directories for uploaded files
     crdb_directory = "uploaded_files/crdb"
@@ -78,6 +80,8 @@ def main():
         bank_stats, bank_credit_debit = get_bank_stats(bank_statement)
         lender_stats, credit_debit = get_lender_stats(lending_statement)
 
+
+
         # Display Bank Statement Stats
         display_metrics("Bank Statement Stats", bank_stats)
         display_metrics("", bank_credit_debit)
@@ -85,6 +89,7 @@ def main():
         # Display Lending Company Payment Document Stats
         display_metrics("Airtable Document Stats", lender_stats)
         display_metrics("", credit_debit)
+        st.write("---")
 
         # check if there are missing PoPs
         if lender_stats['no_PoP'] > 0:
