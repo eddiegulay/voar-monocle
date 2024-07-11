@@ -29,7 +29,7 @@ def display_metrics(title, stats):
         col.write(f"**{metric}:** \n{value}")
 
 def main():
-    st.title("Flit Monocle 🧐")
+    st.title("🧐 Flit Monocle")
     st.write("Cross company statement recon.")
     st.write("---")
 
