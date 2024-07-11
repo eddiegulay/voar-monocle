@@ -104,6 +104,7 @@ def get_lender_stats(lender_statement):
 
     return results, credit_debit
 
+
 def get_bank_stats(bank_statement):
     """
     Get Dataset Stats
@@ -150,3 +151,18 @@ def check_missing_from_lender(bank_statement, lender_statement):
     missing_records = bank_statement[~bank_descriptions.isin(lender_descriptions)]
 
     return missing_records
+
+
+def get_lender_df_by_column_and_value(column_name, value, lender_statement):
+    """
+    Get a subset of the lender statement DataFrame based on a column value.
+
+    Parameters:
+    - column_name (str): The name of the column to filter on.
+    - value (str): The value to filter the column on.
+    - lender_statement (pd.DataFrame): The lender statement DataFrame.
+
+    Returns:
+    - pd.DataFrame: A subset of the lender statement DataFrame where the specified column has the specified value.
+    """
+    return lender_statement[lender_statement[column_name] == value]

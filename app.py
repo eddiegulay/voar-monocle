@@ -86,11 +86,29 @@ def main():
         display_metrics("Airtable Document Stats", lender_stats)
         display_metrics("", credit_debit)
 
+        # check if there are missing PoPs
+        if lender_stats['no_PoP'] > 0:
+            st.subheader("🧾 Records missing Proof of Payment:")
+            st.write(get_lender_df_by_column_and_value('POP', 'No PoP Provided', lending_statement))
+            # total missing value
+            total_missing_value = lending_statement[lending_statement['POP'] == 'No PoP Provided']['credit'].sum()
+            total_missing_value = locale.currency(total_missing_value, grouping=True)
+            st.write(f"Total Missing Value (sent to lender): {total_missing_value}")
+
+        # check if there are unmatched records
+        if lender_stats['unmatched'] > 0:
+            st.subheader("❌ Unmatched Records:")
+            st.write(get_lender_df_by_column_and_value('ismatched', 'Not Checked', lending_statement))
+            # total unmatched value
+            total_unmatched_value = lending_statement[lending_statement['ismatched'] == 'Not Checked']['credit'].sum()
+            total_unmatched_value = locale.currency(total_unmatched_value, grouping=True)
+            st.write(f"Total Unmatched Value: {total_unmatched_value}")
+
         # check missing from lender
         missing_from_lender = check_missing_from_lender(bank_statement, lending_statement)
         if len(missing_from_lender) > 0:
             # Display missing from lender
-            st.title("Records missing from Airtable:")
+            st.subheader("⚠️ Records missing from Airtable:")
             st.write(missing_from_lender.drop(columns=['normalized_description', 'Book Balance']))
 
             # total missing amount missing from lender
